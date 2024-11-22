@@ -1,5 +1,3 @@
-
-
 #Temperature convertor: F to C
 def f_to_c():
     farenheight = input("Please enter the temperature in Farenheight: ")
