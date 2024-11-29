@@ -1,0 +1,16 @@
+#frequency counter for words
+import re
+def word_counter():
+  text_input = str(input("Please enter a text you want to analyze: "))
+  text_input = re.sub(r'[^\w\s-]', '', text_input)
+  words_list = text_input.split()
+  word_count = {}
+  for word in words_list:
+    word = word.lower()
+    if word in word_count:
+      word_count[word] += 1
+    else:
+      word_count[word] = 1
+  for word, count in word_count.items():
+    print(f"{word}: {count}")
+word_counter()
