@@ -1,0 +1,33 @@
+from os import execlp
+# phone book exercise
+phone_book = {}
+def phone_menu():
+  while True:
+    try:
+      user_choice = int(input(f"Please select an option:\n1. Add a contact \n2. Delete a contact \n3. View a contact \n4. View all contacts\n5. Exit\n"))
+      if user_choice == 1:
+        contact_name = str(input("Please input the name of your new contact: "))
+        contact_number = str(input("Please input the phone number of your new contact: "))
+        if contact_name not in phone_book:
+          phone_book[contact_name] = [contact_number]
+        else:
+          phone_book[contact_name].append(contact_number)
+        print(f"Updated phone book: {contact_name, contact_number}")
+      elif user_choice == 2:
+        contact_name = str(input("Please input the name of the contact you would like to delete: "))
+        if contact_name in phone_book:
+          del phone_book[contact_name]
+          print("Contact has been deleted")
+      elif user_choice == 3:
+        contact_name = str(input("Please input the name of the contact you would like to view: "))
+        if contact_name in phone_book:
+          print(f"Name: {contact_name}, Phone Numbers: {', '.join(phone_book[contact_name])}")
+      elif user_choice == 4:
+        print(f"All contacts: ")
+        for name, numbers in phone_book.items():
+          print(f"Name: {name}, Phone Numbers: {', '.join(numbers)}")
+      elif user_choice == 5:
+        break
+    except ValueError:
+      print("Please enter a valid input")
+phone_menu()
