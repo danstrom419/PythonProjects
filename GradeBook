@@ -1,0 +1,61 @@
+# Grade tracking dictionary using a dictionary to store names and grades
+def grade_tracker():
+    grade_book = {} 
+    valid_grades = ["A", "B", "C", "D", "F"]
+    while True:
+        try:
+            menu_choice = int(input("Please choose an option:\n1. Enter a student \n2. Add a grade\n3. Delete a student\n4. View all students and grades\n5. Update a grade\n6. Exit program\n"))
+            if menu_choice == 1:
+                new_student = input("Please enter the name of the student: ")
+                if new_student not in grade_book:
+                    grade_book[new_student] = []  # Initialize an empty list for grades
+                else:
+                    print("Student is already in grade book.")
+            elif menu_choice == 2:
+                student_select = input("Please choose the student who's grade you want to input: ")
+                if student_select not in grade_book:
+                    print("Student is not in the grade book")
+                else:
+                    new_grade = input("Please enter the student's grade (A-F): ").upper()
+                    if new_grade not in valid_grades:
+                      print("Invalid grade. Please enter a grade from A to F.")
+                    else:
+                     grade_book[student_select].append(new_grade)  # Append grade to the student's list
+            elif menu_choice == 3: 
+                delete_student = input("Please input the name of the student you wish to delete: ")
+                if delete_student not in grade_book:
+                    print("Student is not in gradebook.")
+                else:
+                    del grade_book[delete_student]  # Remove the student from the dictionary
+                    print(f"{delete_student} has been removed.")
+            elif menu_choice == 4:
+                if not grade_book:
+                  print("No students in the grade book.")
+                else:
+                  print("Student Name | Grades")
+                  print("-------------------------")
+                  for student, grades in grade_book.items():
+                      print(f"{student}: {', '.join(grades)}")
+            elif menu_choice == 5:
+                student_select = input("Select the student whose grade you want to update: ")
+                if student_select not in grade_book:
+                  print("Student is not in the grade book.")
+                else:
+                  print(f"Current grades: {', '.join(grade_book[student_select])}")
+                  try:
+                    grade_index = int(input("Enter the index of the grade you want to update (starting from 0): "))
+                    new_grade = input("Enter the new grade (A-F): ").upper()
+                    if new_grade in valid_grades:
+                      grade_book[student_select][grade_index] = new_grade
+                      print("Grade updated successfully.")
+                    else:
+                      print("Invalid grade. Please enter a valid grade (A-F).")
+                  except (ValueError, IndexError):
+                    print("Invalid index. Please try again.") 
+            elif menu_choice == 6:
+                print("Program closed. Thank you for using Grade tracker")
+                break
+        except ValueError:
+            print("Please enter a valid input")
+
+grade_tracker()
