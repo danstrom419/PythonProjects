@@ -1,0 +1,20 @@
+# program that reads a text file and counts the occurrences of each word
+def uploaded_text():
+  from google.colab import files
+  from collections import Counter
+  import re
+  uploaded = files.upload()
+  filename = list(uploaded.keys())[0]
+  try:
+   with open(filename, 'r', encoding = "utf-8") as file:
+     text = file.read()
+   print(text)
+   words = re.findall(r'\b\w+\b', text.lower()) # splits the text into words
+   word_counts = Counter(words) # counts the words using counter
+   print("\nWord counts:")
+   for word, count in word_counts.items():
+     print(f"{word}: {count}")
+  except Exception as e:
+    print(f"An error occurred: {e}")
+
+uploaded_text()
