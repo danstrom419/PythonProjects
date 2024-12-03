@@ -1,0 +1,50 @@
+# Program that processes CSV data 
+from google.colab import files
+import csv
+import os
+
+#reads the csv file and returns its content as a list of rows (takes file name as input)
+def read_csv(file_name):
+  with open(file_name, mode = 'r', newline = '', encoding = "utf-8-sig") as file: #opens file in read only mode
+    reader = csv.reader(file) #object created to read the CSV data
+    data = [row for row in reader] #contains all the rows in the CSV file
+  return data
+
+#returns the number of rows and columns in the csv data
+def count_rows_and_columns(data): #takes the list of rows from the CSV as input
+  rows = len(data) #calcualtes number of rows
+  columns = len(data[0]) if rows > 0 else 0 #calculates number of columns by checking if there are any rows
+  return rows, columns
+
+#selecs specific columns from the CSV data based on column indicies
+def select_columns(data, columns_to_select): #takes the data and a list of column indices as input
+  selected_data = [] #initializes and empty list to store the selected columns
+  for row in data: #iterates through each row in the data
+    selected_row = [row[i] for i in columns_to_select] #for each row creates a selected row by extracting values specified in columns to select
+    selected_data.append(selected_row) # appends the selected row to the selected data list
+  return selected_data
+
+#writes processed data to a new CSV file
+def write_to_csv(file_name, data): #function takes a file_name and data as input
+  with open(file_name, mode = 'w', newline = '', encoding = "utf-8") as file: #opens the file in write mode ('w') using with open()
+    writer = csv.writer(file) #creates a csv writer object to write the data to the csv file
+    writer.writerows(data) #uses writer.writerows() to write all the rows from the data to the file
+
+def main():
+  print("Please upload the CSV file.")
+  uploaded = files.upload() #prompts user to upload a csv file
+  file_name = list(uploaded.keys())[0] # extracts file name from uploaded data
+  data = read_csv(file_name) #calls read_csv() function
+  rows, columns = count_rows_and_columns(data) # calls count_rows_and_columns() function
+  print(f"The CSV file contains {rows} rows and {columns} columns.")
+  print("Columns available: ", data[0])
+  columns_to_select = input("Enter the column indices you want to select, searated by commas (e.g., 0,1 for 'Name' and 'Age'): ") #user chooses the columns they want to keep in the new csv
+  columns_to_select = [int(index) for index in columns_to_select.split(',')] #converts the user's input into a list of integers, splits the string into commas using split(",")
+  selected_data = select_columns(data, columns_to_select) # calls the select_columns() function
+  output_file = input("Enter the name for the output CSV file (e.g., 'processed.csv'): ")
+  write_to_csv(output_file, selected_data) #calls the function write_to_csv()
+  print(f"Processed data has been saved to {output_file}.")
+  files.download(output_file) #downloads the new csv file
+
+if __name__ == "__main__":
+  main()
