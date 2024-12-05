@@ -1,0 +1,28 @@
+# project that combines two text files
+def uploaded_text():
+  from google.colab import files
+  import re
+  uploaded_file1 = files.upload()
+  uploaded_file2 = files.upload()
+  file1_name = list(uploaded_file1.keys())[0]
+  file2_name = list(uploaded_file2.keys())[0]
+  try:
+    with open(file1_name, 'r', encoding = "utf-8") as file:
+      text1 = file.read()
+    with open(file2_name, 'r', encoding = "utf-8") as file:
+      text2 = file.read()
+  except Exception as e:
+    print(f"An error occurred: {e}")
+    return
+  merged_text = text1 + "\n" + text2 #combines text files
+  #below writes the text to a new file
+  output_file_name = input("Please name your file: ")
+  try:
+    with open(output_file_name, 'w', encoding = "utf-8") as output_file:
+      output_file.write(merged_text)
+    print(f"Merged file created successfully: {output_file_name}")
+  except Exception as e:
+    print(f"An error occurred while writing the merged file: {e}")
+  files.download(output_file_name)
+
+uploaded_text()
