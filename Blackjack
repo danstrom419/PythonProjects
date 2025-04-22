@@ -1,0 +1,155 @@
+import random
+# dictionary of card values
+cards_dict = {"2": 2,
+              "3": 3,
+              "4": 4,
+              "5": 5,
+              "6": 6,
+              "7": 7,
+              "8": 8,
+              "9": 9,
+              "10": 10,
+              "Jack": 10,
+              "Queen": 10,
+              "King": 10,
+              "Ace": [1, 11]}
+
+# keeps a list of cardds in our hand
+card_list = []
+dealer_card_list = []
+
+def draw_cards():
+  # counter to keep track of # of cards drawn
+  cards = 0
+  # loop that goes until 2 cards have been drawn
+  while cards < 2:
+    # chooses a random card based on the keys from the dictionary
+    drawn_card = random.choice(list(cards_dict.keys()))
+    # takes the value from the random card/key selected from dictionary
+    drawn_value = cards_dict[drawn_card]
+    # if the card is an Ace asks the user to choose either one or 11 as the value
+    if isinstance(drawn_value, list):
+      # creates a loop that where if the player inputs the incorrect repsonse it looops back until a 1 or 11 is entered
+      while True:
+        try:
+          player_choice = int(input("Would you like the Ace to count as 1 or 11?: "))
+          if player_choice == 1:
+            drawn_value = 1
+            break
+          else:
+            drawn_value = 11
+            break
+        except ValueError:
+          print("Please input a 1 or 11!")
+    # adds to our counter after a loop is completed
+    cards += 1
+    # adds the card value to the list of our drawn cards
+    card_list.append(drawn_value)
+
+def dealer_draw_cards():
+  # counter to keep track of # of cards drawn
+  cards = 0
+  # loop that goes until 2 cards have been drawn
+  while cards < 2:
+    # chooses a random card based on the keys from the dictionary
+    drawn_card = random.choice(list(cards_dict.keys()))
+    # takes the value from the random card/key selected from dictionary
+    drawn_value = cards_dict[drawn_card]
+    # if ace is selected the dealer will randomly choose either 1 or 11
+    if isinstance(drawn_value, list):
+      drawn_value = random.choice(drawn_value)
+    cards += 1
+    dealer_card_list.append(drawn_value)
+
+def hit_or_stand():
+  # loop that runs through either taking a hit or standing
+  while True:
+    hand_value = sum(card_list)
+    # gives the user their current hand value and asks if they want to hit or stand
+    dealer_value = sum(dealer_card_list)
+    print(f"The Dealer's value: {dealer_value}")
+    user_choice = input(f"your hand value is {hand_value} do you want to hit or stand?: ")
+    # if the user chooses hit it will choose a random value from the dictionary and add it to the card list
+    if user_choice == "hit":
+      drawn_value = random.choice(list(cards_dict.values()))
+      # same piece from draw_cards if an ace is drawn then have the player choose whetehr it counts as 1 or 11
+      if isinstance(drawn_value, list):
+        while True:
+          try:
+            player_choice = int(input("Would you like the Ace to count as 1 or 11?: "))
+            if player_choice == 1:
+              drawn_value = 1
+              break
+            else:
+              drawn_value = 11
+              break
+          except ValueError:
+            print("Please input a 1 or 11!")
+      # adds the new drawn value to our list and then sums it together with the older values
+      card_list.append(drawn_value)
+      hand_value = sum(card_list)
+      print(f"Your hand value is now {hand_value}")
+      # if the hand value goes over 21 the user busts and loses the game
+      if hand_value > 21:
+        break
+    else:
+      print(f"Your final hand value is {hand_value}")
+      break
+
+def dealer_hit_or_stand():
+  dealer_value = sum(dealer_card_list)
+  # the dealer will stand if at 17 or greater, below 17 they will take a hit
+  while dealer_value < 17:
+    drawn_card = random.choice(list(cards_dict.keys()))
+    drawn_value = cards_dict[drawn_card]
+    # the dealer will always take choose 1 instead of 11 when taking a hit and getting an ace
+    if isinstance(drawn_value, list):
+      drawn_value = min(drawn_value)
+    dealer_card_list.append(drawn_value)
+    dealer_value = sum(dealer_card_list)
+    print(f"Dealer value is {dealer_value}")
+    # adds a condition where the dealer busts if they go over 21
+    if dealer_value > 21:
+      return "dealer_bust"
+  return "dealer_stand"
+
+def win_condition(dealer_status):
+  player_value = sum(card_list)
+  dealer_value = sum(dealer_card_list)
+  # adds win conditions
+  if player_value > 21:
+    print("You went over 21, you lose!")
+  elif dealer_status == "dealer_bust":
+    print("Dealer busted! You Win!")
+  elif player_value > dealer_value:
+    print("You win!")
+  elif dealer_value > player_value:
+    print("Dealer wins, you lose!")
+  else:
+    print("It's a draw!")
+
+def play_game():
+  draw_cards()
+  dealer_draw_cards()
+
+# a check to see if blackjack is hit before prompting the user to hit or stand
+  player_value = sum(card_list)
+  dealer_value = sum(dealer_card_list)
+
+# ends the game if either or both parties get blackjack
+  if player_value == 21 and dealer_value == 21:
+    print("Its a draw!")
+    return
+  elif player_value == 21:
+    print("You got a blackjack! You win!")
+    return
+  elif dealer_value == 21:
+    print("Dealer got a blackjack! You lose!")
+    return
+
+  hit_or_stand()
+  # gets either dealer_stand or dealer_bust to let the win_condition know whether to run through and chekc if the delear won or lost and if delaer_bust then no need to check it lost 
+  dealer_status = dealer_hit_or_stand()
+  win_condition(dealer_status)
+
+play_game()
